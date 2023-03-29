@@ -3,6 +3,7 @@ package org.example;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
+import javax.swing.plaf.TableHeaderUI;
 import java.awt.*;
 
 import java.awt.event.ActionEvent;
@@ -62,6 +63,7 @@ public class GUI{
         jTextAreaInfoActually.setForeground(Color.WHITE);
         jTextAreaInfoActually.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
+
         JScrollPane jScrollPane = new JScrollPane(jTextAreaInfoActually);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -90,59 +92,61 @@ public class GUI{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Scanner scanner = new Scanner(System.in);
-                String urlToDownload;
-                ProcessBuilder processBuilder;
-                String user = System.getProperty("user.home");  // pobiera C:\\Users\bszpu
-                File fileMusic = new File(user+"\\Desktop\\Music");
+                    String urlToDownload;
+                    ProcessBuilder processBuilder;
+                    String user = System.getProperty("user.home");  // pobiera C:\\Users\bszpu
+                    File fileMusic = new File(user+"\\Desktop\\Music");
 
-                if(!fileMusic.exists()) fileMusic.mkdirs();
+                    if(!fileMusic.exists()) fileMusic.mkdirs();
 
-                System.out.println("Enter YouTube URL: ");
-                urlToDownload = "yt-dlp -f mp4 -o "+user+"\\Desktop\\Music\\%(title)s.%(ext)s "+jTextAreaURL.getText();
-                processBuilder = new ProcessBuilder("cmd.exe", "/c",urlToDownload);
-                processBuilder.redirectErrorStream(true);
-                Process process = null;
-                try {
-                    process = processBuilder.start();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-                BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-
-
-                String line = "";
-                jTextAreaInfoActually.setText("");
-                while (true) {
+                    System.out.println("Enter YouTube URL: ");
+                    urlToDownload = "yt-dlp -f mp4 -o "+user+"\\Desktop\\Music\\%(title)s.%(ext)s "+jTextAreaURL.getText();
+                    processBuilder = new ProcessBuilder("cmd.exe", "/c",urlToDownload);
+                    processBuilder.redirectErrorStream(true);
+                    Process process = null;
                     try {
-                        line = r.readLine();
-
+                        process = processBuilder.start();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                    if (line == null) {
-                        info.setForeground(Color.GREEN);
-                        info.setText("Downloading Finished!");
-                        Thread thread = new Thread(() -> {
+
+
+                    BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+
+                    Thread threadContainer = new Thread(() -> {
+                    String line = "";
+                    jTextAreaInfoActually.setText("");
+                    while (true) {
+                        try {
+                            line = r.readLine();
+
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        if (line == null) {
+                            info.setForeground(Color.GREEN);
+                            info.setText("Downloading Finished!");
                             try {
                                 sleep(10000);
                                 info.setText("");
-
                             } catch (InterruptedException ex) {
                                 throw new RuntimeException(ex);
                             }
-                        });
-                        thread.start();
-                        break;
-                    }
-                    System.out.println(line);
-                    jTextAreaInfoActually.append(line);
-                    jTextAreaInfoActually.append(System.lineSeparator());
 
-                }
+                            break;
+                        }
+                        System.out.println(line);
+                        jTextAreaInfoActually.append(line);
+                        jTextAreaInfoActually.append(System.lineSeparator());
+                        jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
+
+                    }
+                });
+
+                threadContainer.start();
+
+
             }
         });
 
@@ -156,95 +160,107 @@ public class GUI{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String urlToDownload;
-                ProcessBuilder processBuilder;
+                Thread threadContainer = new Thread(() -> {
+                    String urlToDownload;
+                    ProcessBuilder processBuilder;
 
-                String user = System.getProperty("user.home");
-                File fileFormatted = new File(user+"\\Desktop\\Music\\Formatted");
+                    String user = System.getProperty("user.home");
+                    File fileFormatted = new File(user+"\\Desktop\\Music\\Formatted");
 
-                String fileName;
 
-                if(!fileFormatted.exists()) fileFormatted.mkdirs();
+                    String fileName;
 
-                Set<String> listFilesMusic = listFilesUsingJavaIO(user+"/Desktop/Music");
-                if(listFilesMusic.isEmpty()){
-                    info.setText("Directory is Empty !");
+                    if(!fileFormatted.exists()) fileFormatted.mkdirs();
 
-                    Thread thread = new Thread(() -> {
-                        try {
-                            sleep(10000);
-                            info.setText("");
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    });
-                    thread.start();
+                    Set<String> listFilesMusic = listFilesUsingJavaIO(user+"/Desktop/Music");
+                    if(listFilesMusic.isEmpty()){
+                        info.setText("Directory is Empty !");
 
-                }
-                for (String x : listFilesMusic){
-                    if(getExtensionByApacheCommonLib(x).equals("mp4")){
-                        fileName = x;
-
-                        char[] fileNameCharArr = fileName.toCharArray();
-
-                        String newFileName = "";
-
-                        for(int i=0; i<fileNameCharArr.length-4; i++){
-                            newFileName += fileNameCharArr[i];
-                        }
-
-                        urlToDownload = "ffmpeg -y -i \""+fileName+"\" Formatted/\""+newFileName+"\".mp3";
-
-                        processBuilder = new ProcessBuilder("cmd.exe", "/c", urlToDownload);
-                        //ciekawe
-                        processBuilder.directory(new File(user+"/Desktop/Music/"));
-
-                        processBuilder.redirectErrorStream(true);
-                        Process process = null;
-                        try {
-                            process = processBuilder.start();
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-
-                        BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                        String line = "";
-                        jTextAreaInfoActually.setText("");
-
-                        while (true) {
+                        Thread thread = new Thread(() -> {
                             try {
-                                line = r.readLine();
+                                sleep(10000);
+                                info.setText("");
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        thread.start();
+
+                    }
+                    for (String x : listFilesMusic){
+                        if(getExtensionByApacheCommonLib(x).equals("mp4")){
+
+                            fileName = x;
+
+                            char[] fileNameCharArr = fileName.toCharArray();
+
+                            String newFileName = "";
+
+                            for(int i=0; i<fileNameCharArr.length-4; i++){
+                                newFileName += fileNameCharArr[i];
+                            }
+
+                            urlToDownload = "ffmpeg -y -i \""+fileName+"\" Formatted/\""+newFileName+"\".mp3";
+
+                            processBuilder = new ProcessBuilder("cmd.exe", "/c", urlToDownload);
+                            //ciekawe
+                            processBuilder.directory(new File(user+"/Desktop/Music/"));
+
+                            processBuilder.redirectErrorStream(true);
+                            Process process = null;
+                            try {
+                                process = processBuilder.start();
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            if (line == null) {
-                                info.setForeground(Color.GREEN);
-                                info.setText("Formatting Finished!");
-                                Thread thread = new Thread(() -> {
+
+                            BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+
+                            String line = "";
+                            jTextAreaInfoActually.setText("");
+                            while (true) {
+                                try {
+                                    line = r.readLine();
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                if (line == null) {
+                                    info.setForeground(Color.GREEN);
+                                    info.setText("Formatting "+x+" Finished!");
                                     try {
-                                        sleep(10000);
+                                        sleep(2000);
                                         info.setText("");
                                     } catch (InterruptedException ex) {
                                         throw new RuntimeException(ex);
                                     }
-                                });
-                                thread.start();
-                                break;
+
+                                    File file = new File(user+"/Desktop/Music/"+fileName);
+                                    if(file.delete()) {
+                                        System.out.println("File Deleted!");
+                                        jTextAreaInfoActually.append("File deleted after Formatted !");
+                                    }
+
+                                    break;
+                                }
+                                System.out.println(line);
+
+
+                                jTextAreaInfoActually.append(line);
+                                jTextAreaInfoActually.append(System.lineSeparator());
+                                jTextAreaInfoActually.getCaret().setDot( Integer.MAX_VALUE );
+
                             }
-                            System.out.println(line);
 
-                            jTextAreaInfoActually.append(line);
-                            jTextAreaInfoActually.append(System.lineSeparator());
+
+
+
                         }
-
-                        File file = new File(user+"/Desktop/Music/"+fileName);
-                        if(file.delete()) {
-                            System.out.println("File Deleted!");
-                            jTextAreaInfoActually.append("File deleted after Formatted !");
-                        }
-
                     }
-                }
+                });
+
+                threadContainer.start();
+
             }
         });
 
@@ -256,6 +272,7 @@ public class GUI{
         instructionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                jTextAreaInfoActually.setText("");
                 //img.setVisible(!img.isVisible());
                 jTextAreaInfoActually.append("Hello there!");
                 jTextAreaInfoActually.append(System.lineSeparator());
