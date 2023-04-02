@@ -4,6 +4,7 @@
     <root id="archive" name="ytMP3.jar">
       <element id="module-output" name="ytMP3" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.6/commons-io-2.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-net/commons-net/3.9.0/commons-net-3.9.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
