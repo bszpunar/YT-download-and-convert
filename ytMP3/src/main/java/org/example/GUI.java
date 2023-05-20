@@ -14,48 +14,46 @@ import java.sql.SQLOutput;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static java.lang.Thread.sleep;
 
-public class GUI{
+public class GUI {
 
 
     Image logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png")).getImage();
     Image hendrix = new ImageIcon(getClass().getClassLoader().getResource("jimiHH.png")).getImage();
     private String user = "user";
     private String password = "password";
-    private int port;
-    private String serverAddress;
     private FTPClient ftpClient = new FTPClient();
 
     private String userPath = System.getProperty("user.home");
 
-    public GUI(){
+    public GUI() {
         JFrame jFrame = new JFrame();
         jFrame.setTitle("YouTube MP3");
         jFrame.setIconImage(logo);
         jFrame.setResizable(false);
         jFrame.setSize(800, 400);
-        jFrame.setLocationRelativeTo(null);
+        jFrame.setLocation(150, 150);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setLayout(new FlowLayout());
         jFrame.getContentPane().setBackground(Color.BLACK);
 
 
-
-        JPanel jPanelURL = new JPanel(new FlowLayout(FlowLayout.CENTER,10,15));
-        jPanelURL.setPreferredSize(new Dimension(jFrame.getWidth(),50));
+        JPanel jPanelURL = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
+        jPanelURL.setPreferredSize(new Dimension(jFrame.getWidth(), 50));
         jPanelURL.setBackground(Color.BLACK);
 
-        JPanel jPanelINFO = new JPanel(new FlowLayout(FlowLayout.CENTER,10,15));
-        jPanelINFO.setPreferredSize(new Dimension(jFrame.getWidth(),180));
+        JPanel jPanelINFO = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
+        jPanelINFO.setPreferredSize(new Dimension(jFrame.getWidth(), 180));
         jPanelINFO.setBackground(Color.BLACK);
 
-        JPanel jPanelButton = new JPanel(new FlowLayout(FlowLayout.CENTER,10,15));
-        jPanelButton.setPreferredSize(new Dimension(jFrame.getWidth(),50));
+        JPanel jPanelButton = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
+        jPanelButton.setPreferredSize(new Dimension(jFrame.getWidth(), 50));
         jPanelButton.setBackground(Color.BLACK);
 
-        JPanel jPanelFTP = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
-        jPanelFTP.setPreferredSize(new Dimension(jFrame.getWidth()-50,44));
+        JPanel jPanelFTP = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        jPanelFTP.setPreferredSize(new Dimension(jFrame.getWidth() - 50, 44));
         jPanelFTP.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         jPanelFTP.setBackground(Color.BLACK);
 
@@ -64,7 +62,7 @@ public class GUI{
         jLabelServerADDRESS.setForeground(Color.WHITE);
 
         JTextArea jTextAreaServerADDRESS = new JTextArea("192.168.1.102");
-        jTextAreaServerADDRESS.setPreferredSize(new Dimension(150,20));
+        jTextAreaServerADDRESS.setPreferredSize(new Dimension(150, 20));
         jTextAreaServerADDRESS.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         jTextAreaServerADDRESS.setBackground(Color.BLACK);
         jTextAreaServerADDRESS.setForeground(Color.WHITE);
@@ -102,7 +100,7 @@ public class GUI{
         jLabelPORT.setForeground(Color.WHITE);
 
         JTextArea jTextAreaPORT = new JTextArea("2121");
-        jTextAreaPORT.setPreferredSize(new Dimension(100,20));
+        jTextAreaPORT.setPreferredSize(new Dimension(100, 20));
         jTextAreaPORT.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         jTextAreaPORT.setBackground(Color.BLACK);
         jTextAreaPORT.setForeground(Color.WHITE);
@@ -137,7 +135,7 @@ public class GUI{
 
 
         JTextArea jTextAreaURL = new JTextArea();
-        jTextAreaURL.setPreferredSize(new Dimension(500,20));
+        jTextAreaURL.setPreferredSize(new Dimension(500, 20));
         jTextAreaURL.setBackground(Color.BLACK);
         jTextAreaURL.setForeground(Color.WHITE);
         jTextAreaURL.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -169,7 +167,7 @@ public class GUI{
             }
         });
 
-        JTextArea jTextAreaInfoActually = new JTextArea(8,70);
+        JTextArea jTextAreaInfoActually = new JTextArea(8, 70);
         jTextAreaInfoActually.setLineWrap(true);
         jTextAreaInfoActually.setWrapStyleWord(true);
         jTextAreaInfoActually.setBackground(Color.BLACK);
@@ -188,7 +186,6 @@ public class GUI{
         img.setVisible(false);
 
 
-
         JLabel info = new JLabel("");
         info.setBackground(Color.BLACK);
         info.setForeground(Color.GREEN);
@@ -196,7 +193,7 @@ public class GUI{
         JButton moveButton = new JButton("MOVE");
         moveButton.setBackground(Color.BLACK);
         moveButton.setForeground(Color.WHITE);
-        moveButton.setPreferredSize(new Dimension(150,20));
+        moveButton.setPreferredSize(new Dimension(150, 20));
         moveButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         moveButton.addMouseListener(new MouseListener() {
             @Override
@@ -230,14 +227,17 @@ public class GUI{
             public void actionPerformed(ActionEvent e) {
 
                 Thread move = new Thread(() -> {
-                    Set<String> listFilesInFormatted = listFilesUsingJavaIO(userPath+"/Desktop/Music/Formatted/");
-                    for(String x : listFilesInFormatted){
+                    Set<String> listFilesInFormatted = listFilesUsingJavaIO(userPath + "/Desktop/Music/Formatted/");
+
+
+                    for (String x : listFilesInFormatted) {
+
                         String urlToDownload;
                         ProcessBuilder processBuilder;
 
-                        urlToDownload = "move \""+x+"\" "+userPath+"/Desktop/Music/Formatted/\"Already Sent Files\"";
-                        processBuilder = new ProcessBuilder("cmd.exe", "/c",urlToDownload);
-                        processBuilder.directory(new File(userPath+"/Desktop/Music/Formatted/"));
+                        urlToDownload = "move \"" + x + "\" " + userPath + "/Desktop/Music/Formatted/\"Already Sent Files\"";
+                        processBuilder = new ProcessBuilder("cmd.exe", "/c", urlToDownload);
+                        processBuilder.directory(new File(userPath + "/Desktop/Music/Formatted/"));
                         processBuilder.redirectErrorStream(true);
                         Process process = null;
                         try {
@@ -248,14 +248,14 @@ public class GUI{
 
                         BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-                        while (true){
+                        while (true) {
                             try {
 
                                 jTextAreaInfoActually.append(r.readLine());
                                 jTextAreaInfoActually.append(System.lineSeparator());
                                 jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
-                                if (r.readLine() == null){
-                                    jTextAreaInfoActually.append("File "+x+" moved Successfully !");
+                                if (r.readLine() == null) {
+                                    jTextAreaInfoActually.append("File " + x + " moved Successfully !");
                                     jTextAreaInfoActually.append(System.lineSeparator());
                                     jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
                                     break;
@@ -265,6 +265,8 @@ public class GUI{
                             }
 
                         }
+
+
                     }
                 });
 
@@ -308,8 +310,6 @@ public class GUI{
                 }).start();*/
 
 
-
-
             }
         });
 
@@ -317,7 +317,7 @@ public class GUI{
         JButton sendButton = new JButton("SEND");
         sendButton.setBackground(Color.BLACK);
         sendButton.setForeground(Color.WHITE);
-        sendButton.setPreferredSize(new Dimension(150,20));
+        sendButton.setPreferredSize(new Dimension(150, 20));
         sendButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         sendButton.addMouseListener(new MouseListener() {
             @Override
@@ -350,74 +350,98 @@ public class GUI{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                File dirAlreadySent = new File(userPath+"/Desktop/Music/Formatted/Already Sent Files");
-                if(!dirAlreadySent.exists()) dirAlreadySent.mkdir();
+                File dirAlreadySent = new File(userPath + "/Desktop/Music/Formatted/Already Sent Files");
+                if (!dirAlreadySent.exists()) dirAlreadySent.mkdir();
 
 
-                Set<String> listFilesInFormatted = listFilesUsingJavaIO(userPath+"/Desktop/Music/Formatted/");
+                Set<String> listFilesInFormatted = listFilesUsingJavaIO(userPath + "/Desktop/Music/Formatted/");
 
                 Thread thread = new Thread(() -> {
                     jTextAreaInfoActually.setText("");
 
-                    for (String x : listFilesInFormatted){
+                    for (String x : listFilesInFormatted) {
 
-                        if(!jTextAreaServerADDRESS.getText().equals("") && !jTextAreaPORT.getText().equals("")){
+                        if (!jTextAreaServerADDRESS.getText().equals("") && !jTextAreaPORT.getText().equals("")) {
                             try {
                                 ftpClient.connect(jTextAreaServerADDRESS.getText(), Integer.parseInt(jTextAreaPORT.getText()));
-                                ftpClient.login(user,password);
+                                ftpClient.login(user, password);
                                 ftpClient.enterLocalPassiveMode();
                                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-                                File fileX = new File(userPath+"/Desktop/Music/Formatted/"+x);
+                                File fileX = new File(userPath + "/Desktop/Music/Formatted/" + x);
 
                                 //change string for char arr
                                 char[] arrChar = x.toCharArray();
                                 //exchange incopatibile chars
 
-                                for(int i=0; i<arrChar.length; i++){
-                                    switch (arrChar[i]){
-                                        case 'ą': arrChar[i] = ' ';
-                                        case 'ć': arrChar[i] = ' ';
-                                        case 'ę': arrChar[i] = ' ';
-                                        case 'ł': arrChar[i] = ' ';
-                                        case 'ń': arrChar[i] = ' ';
-                                        case 'ó': arrChar[i] = ' ';
-                                        case 'ś': arrChar[i] = ' ';
-                                        case 'ź': arrChar[i] = ' ';
-                                        case 'ż': arrChar[i] = ' ';
-                                        case 'Ą': arrChar[i] = ' ';
-                                        case 'Ć': arrChar[i] = ' ';
-                                        case 'Ę': arrChar[i] = ' ';
-                                        case 'Ł': arrChar[i] = ' ';
-                                        case 'Ń': arrChar[i] = ' ';
-                                        case 'Ó': arrChar[i] = ' ';
-                                        case 'Ś': arrChar[i] = ' ';
-                                        case 'Ź': arrChar[i] = ' ';
-                                        case 'Ż': arrChar[i] = ' ';
-                                        case '\"': arrChar[i] = ' ';
-                                        case '-': arrChar[i] = ' ';
-                                        case '_': arrChar[i] = ' ';
-                                        case '`': arrChar[i] = ' ';
-                                        case ',': arrChar[i] = ' ';
-                                        case '\'': arrChar[i] = ' ';
+                                for (int i = 0; i < arrChar.length; i++) {
+                                    switch (arrChar[i]) {
+                                        case 'ą':
+                                            arrChar[i] = ' ';
+                                        case 'ć':
+                                            arrChar[i] = ' ';
+                                        case 'ę':
+                                            arrChar[i] = ' ';
+                                        case 'ł':
+                                            arrChar[i] = ' ';
+                                        case 'ń':
+                                            arrChar[i] = ' ';
+                                        case 'ó':
+                                            arrChar[i] = ' ';
+                                        case 'ś':
+                                            arrChar[i] = ' ';
+                                        case 'ź':
+                                            arrChar[i] = ' ';
+                                        case 'ż':
+                                            arrChar[i] = ' ';
+                                        case 'Ą':
+                                            arrChar[i] = ' ';
+                                        case 'Ć':
+                                            arrChar[i] = ' ';
+                                        case 'Ę':
+                                            arrChar[i] = ' ';
+                                        case 'Ł':
+                                            arrChar[i] = ' ';
+                                        case 'Ń':
+                                            arrChar[i] = ' ';
+                                        case 'Ó':
+                                            arrChar[i] = ' ';
+                                        case 'Ś':
+                                            arrChar[i] = ' ';
+                                        case 'Ź':
+                                            arrChar[i] = ' ';
+                                        case 'Ż':
+                                            arrChar[i] = ' ';
+                                        case '\"':
+                                            arrChar[i] = ' ';
+                                        case '-':
+                                            arrChar[i] = ' ';
+                                        case '_':
+                                            arrChar[i] = ' ';
+                                        case '`':
+                                            arrChar[i] = ' ';
+                                        case ',':
+                                            arrChar[i] = ' ';
+                                        case '\'':
+                                            arrChar[i] = ' ';
                                     }
                                 }
 
                                 //make string
                                 String str = "";
-                                for(char j : arrChar) str += j;
+                                for (char j : arrChar) str += j;
 
                                 FileInputStream fileInputStream = new FileInputStream(fileX);
                                 boolean isSent = ftpClient.storeFile(str, fileInputStream);
 
-                                if(isSent){
+                                if (isSent) {
 
-                                    jTextAreaInfoActually.append("File "+x+" sent Successfully !");
+                                    jTextAreaInfoActually.append("File " + x + " sent Successfully !");
                                     jTextAreaInfoActually.append(System.lineSeparator());
                                     jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
 
-                                }else{
-                                    jTextAreaInfoActually.append("Error occured during sending File "+x+" !");
+                                } else {
+                                    jTextAreaInfoActually.append("Error occured during sending File " + x + " !");
                                     jTextAreaInfoActually.append(System.lineSeparator());
                                     jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
                                 }
@@ -426,7 +450,7 @@ public class GUI{
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                        }else {
+                        } else {
                             info.setForeground(Color.GREEN);
                             info.setText("Field ADDRESS and PORT is required !");
                             try {
@@ -440,7 +464,6 @@ public class GUI{
                     }
 
 
-
                 });
 
                 thread.start();
@@ -449,11 +472,8 @@ public class GUI{
         });
 
 
-
-
-
         JButton downloadButton = new JButton("Download");
-        downloadButton.setPreferredSize(new Dimension(150,20));
+        downloadButton.setPreferredSize(new Dimension(150, 20));
         downloadButton.setBackground(Color.BLACK);
         downloadButton.setForeground(Color.WHITE);
         downloadButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -484,32 +504,32 @@ public class GUI{
 
             }
         });
-        downloadButton.addActionListener(new ActionListener(){
+        downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                    String urlToDownload;
-                    ProcessBuilder processBuilder;
-                    File fileMusic = new File(userPath+"\\Desktop\\Music");
+                String urlToDownload;
+                ProcessBuilder processBuilder;
+                File fileMusic = new File(userPath + "\\Desktop\\Music");
 
-                    if(!fileMusic.exists()) fileMusic.mkdirs();
+                if (!fileMusic.exists()) fileMusic.mkdirs();
 
-                    System.out.println("Enter YouTube URL: ");
-                    urlToDownload = "yt-dlp -f mp4 -o "+userPath+"\\Desktop\\Music\\%(title)s.%(ext)s "+jTextAreaURL.getText();
-                    processBuilder = new ProcessBuilder("cmd.exe", "/c",urlToDownload);
-                    processBuilder.redirectErrorStream(true);
-                    Process process = null;
-                    try {
-                        process = processBuilder.start();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-
-
-                    BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                System.out.println("Enter YouTube URL: ");
+                urlToDownload = "yt-dlp -f mp4 -o " + userPath + "\\Desktop\\Music\\%(title)s.%(ext)s " + jTextAreaURL.getText();
+                processBuilder = new ProcessBuilder("cmd.exe", "/c", urlToDownload);
+                processBuilder.redirectErrorStream(true);
+                Process process = null;
+                try {
+                    process = processBuilder.start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
 
-                    Thread threadContainer = new Thread(() -> {
+                BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+
+                Thread threadContainer = new Thread(() -> {
                     String line = "";
                     jTextAreaInfoActually.setText("");
                     while (true) {
@@ -546,7 +566,7 @@ public class GUI{
         });
 
         JButton formatAllButton = new JButton("Format MP3");
-        formatAllButton.setPreferredSize(new Dimension(150,20));
+        formatAllButton.setPreferredSize(new Dimension(150, 20));
         formatAllButton.setBackground(Color.BLACK);
         formatAllButton.setForeground(Color.WHITE);
         formatAllButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -585,15 +605,15 @@ public class GUI{
                     ProcessBuilder processBuilder;
 
 
-                    File fileFormatted = new File(userPath+"\\Desktop\\Music\\Formatted");
+                    File fileFormatted = new File(userPath + "\\Desktop\\Music\\Formatted");
 
 
                     String fileName;
 
-                    if(!fileFormatted.exists()) fileFormatted.mkdirs();
+                    if (!fileFormatted.exists()) fileFormatted.mkdirs();
 
-                    Set<String> listFilesMusic = listFilesUsingJavaIO(userPath+"/Desktop/Music");
-                    if(listFilesMusic.isEmpty()){
+                    Set<String> listFilesMusic = listFilesUsingJavaIO(userPath + "/Desktop/Music");
+                    if (listFilesMusic.isEmpty()) {
                         info.setText("Directory is Empty !");
 
                         Thread thread = new Thread(() -> {
@@ -607,8 +627,8 @@ public class GUI{
                         thread.start();
 
                     }
-                    for (String x : listFilesMusic){
-                        if(getExtensionByApacheCommonLib(x).equals("mp4")){
+                    for (String x : listFilesMusic) {
+                        if (getExtensionByApacheCommonLib(x).equals("mp4")) {
 
                             fileName = x;
 
@@ -616,15 +636,15 @@ public class GUI{
 
                             String newFileName = "";
 
-                            for(int i=0; i<fileNameCharArr.length-4; i++){
+                            for (int i = 0; i < fileNameCharArr.length - 4; i++) {
                                 newFileName += fileNameCharArr[i];
                             }
 
-                            urlToDownload = "ffmpeg -y -i \""+fileName+"\" Formatted/\""+newFileName+"\".mp3";
+                            urlToDownload = "ffmpeg -y -i \"" + fileName + "\" Formatted/\"" + newFileName + "\".mp3";
 
                             processBuilder = new ProcessBuilder("cmd.exe", "/c", urlToDownload);
                             //ciekawe
-                            processBuilder.directory(new File(userPath+"/Desktop/Music/"));
+                            processBuilder.directory(new File(userPath + "/Desktop/Music/"));
 
                             processBuilder.redirectErrorStream(true);
                             Process process = null;
@@ -646,7 +666,7 @@ public class GUI{
                                 }
                                 if (line == null) {
                                     info.setForeground(Color.GREEN);
-                                    info.setText("Formatting "+x+" Finished!");
+                                    info.setText("Formatting " + x + " Finished!");
                                     try {
                                         sleep(2000);
                                         info.setText("");
@@ -654,8 +674,8 @@ public class GUI{
                                         throw new RuntimeException(ex);
                                     }
 
-                                    File file = new File(userPath+"/Desktop/Music/"+fileName);
-                                    if(file.delete()) {
+                                    File file = new File(userPath + "/Desktop/Music/" + fileName);
+                                    if (file.delete()) {
                                         System.out.println("File Deleted!");
                                         jTextAreaInfoActually.append("File deleted after Formatted !");
                                     }
@@ -667,11 +687,9 @@ public class GUI{
 
                                 jTextAreaInfoActually.append(line);
                                 jTextAreaInfoActually.append(System.lineSeparator());
-                                jTextAreaInfoActually.getCaret().setDot( Integer.MAX_VALUE );
+                                jTextAreaInfoActually.getCaret().setDot(Integer.MAX_VALUE);
 
                             }
-
-
 
 
                         }
@@ -684,7 +702,7 @@ public class GUI{
         });
 
         JButton instructionButton = new JButton("HELP !");
-        instructionButton.setPreferredSize(new Dimension(150,20));
+        instructionButton.setPreferredSize(new Dimension(150, 20));
         instructionButton.setBackground(Color.BLACK);
         instructionButton.setForeground(Color.WHITE);
         instructionButton.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -722,7 +740,7 @@ public class GUI{
                 //img.setVisible(!img.isVisible());
                 jTextAreaInfoActually.append("Hello there!");
                 jTextAreaInfoActually.append(System.lineSeparator());
-                jTextAreaInfoActually.append("My name is Bartek I'll help you configure you PC :D");
+                jTextAreaInfoActually.append("My name is Bart I'll help you configure you PC :D");
                 jTextAreaInfoActually.append(System.lineSeparator());
                 jTextAreaInfoActually.append(System.lineSeparator());
                 jTextAreaInfoActually.append("Firstly you have to add 'yt-dlp' to Environment Variables (you don't know how ? - my advice Google it!)");
@@ -735,7 +753,6 @@ public class GUI{
                 jTextAreaInfoActually.append("Destination PATH downloaded files:    /Desktop/Music/");
             }
         });
-
 
 
         jPanelURL.add(jLabelURL);
@@ -754,7 +771,6 @@ public class GUI{
         jPanelFTP.add(jTextAreaPORT);
         jPanelFTP.add(sendButton);
         jPanelFTP.add(moveButton);
-
 
 
         jFrame.add(jPanelURL);
